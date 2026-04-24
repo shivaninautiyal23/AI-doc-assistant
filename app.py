@@ -1,31 +1,37 @@
 from fastapi import FastAPI, UploadFile, File
-from pydantic import BaseModel
 import shutil
+import os
 
-from rag_service import extract_text_from_pdf, chunk_text, create_embeddings, store_embeddings
+from rag_service import (
+    extract_text_from_pdf,
+    chunk_text,
+    create_embeddings,
+    store_embeddings
+)
+
 from rag_pipeline import rag_answer
 
 app = FastAPI()
 
-class Query(BaseModel):
-    question: str
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Upload PDF
+
 @app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    file_path = f"temp_{file.filename}"
+async def upload(file: UploadFile = File(...)):
+    path = f"{UPLOAD_DIR}/{file.filename}"
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    with open(path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
 
-    text = extract_text_from_pdf(file_path)
+    text = extract_text_from_pdf(path)
     chunks = chunk_text(text)
     embeddings = create_embeddings(chunks)
     store_embeddings(chunks, embeddings)
 
-    return {"message": "File uploaded and processed successfully"}
+    return {"message": "uploaded successfully"}
 
-# Chat endpoint (RAG)
+
 @app.post("/chat")
-def chat(q: Query):
-    return rag_answer(q.question)
+def chat(query: dict):
+    return rag_answer(query["question"])
