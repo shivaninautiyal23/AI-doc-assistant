@@ -1,31 +1,28 @@
 import streamlit as st
 import requests
 
-st.title("📄 AI Document Assistant")
+st.title("Simple RAG App")
 
-# Upload file
-uploaded_file = st.file_uploader("Upload PDF", type=["pdf"])
+file = st.file_uploader("Upload PDF")
 
-if uploaded_file:
-    files = {"file": uploaded_file.getvalue()}
-    res = requests.post("http://127.0.0.1:8000/upload", files=files)
-    st.success("File uploaded!")
+if file:
+    res = requests.post("http://localhost:8000/upload", files={"file": file})
+    st.write(res.json())
 
-# Ask question
-question = st.text_input("Ask a question")
+
+question = st.text_input("Ask question")
 
 if st.button("Ask"):
     res = requests.post(
-        "http://127.0.0.1:8000/chat",
+        "http://localhost:8000/chat",
         json={"question": question}
     )
 
     data = res.json()
 
-    st.subheader("Answer")
-    st.write(data.get("answer", ""))
+    st.write("### Answer")
+    st.write(data["answer"])
 
-    if "sources" in data and data["sources"]:
-        st.subheader("Sources")
-        for s in data["sources"]:
-            st.write("- ", s[:200])  # trim long text
+    st.write("### Sources")
+    for s in data["sources"]:
+        st.write("-", s)
