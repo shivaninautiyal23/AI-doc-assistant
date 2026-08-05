@@ -7,7 +7,7 @@ API_URL = "http://localhost:8000"
 
 st.title("📄 RAG Chat + Notes System")
 
-# ================= STATE =================
+# STATE
 if "sessions" not in st.session_state:
     st.session_state.sessions = {
         "Chat - Default": {"messages": []}
@@ -26,12 +26,10 @@ if "uploaded_file_name" not in st.session_state:
     st.session_state.uploaded_file_name = None
 
 
-# ================= LAYOUT =================
+# LAYOUT
 col1, col2 = st.columns([2, 1])
 
-# ==================================================
 # LEFT → UPLOAD + CHAT + CHAT SESSIONS
-# ==================================================
 with col1:
 
     st.subheader("📤 Upload PDF")
@@ -51,7 +49,7 @@ with col1:
 
             st.success(res.json()["message"])
 
-            # ================= CONDITIONAL DEFAULT CHAT DELETE =================
+            # CONDITIONAL DEFAULT CHAT DELETE
             default_chat = "Chat - Default"
 
             if default_chat in st.session_state.sessions:
@@ -61,7 +59,7 @@ with col1:
                 if len(default_messages) == 0:
                     del st.session_state.sessions[default_chat]
 
-            # ================= CREATE NEW CHAT =================
+            # CREATE NEW CHAT
             file_name = st.session_state.uploaded_file_name or "File"
             base_name = f"Chat - {file_name}"
 
@@ -84,7 +82,7 @@ with col1:
         res = requests.post(f"{API_URL}/reset-vectorstore")
         st.success(res.json()["message"])
     
-    # ================= CHAT SESSIONS =================
+    # CHAT SESSIONS
     st.subheader("💬 Chats")
 
     col_new, col_del = st.columns(2)
@@ -123,7 +121,7 @@ with col1:
 
     st.divider()
 
-    # ================= CHAT =================
+    # CHAT
     chat = st.session_state.sessions[st.session_state.active_chat]["messages"]
 
     st.subheader(f"💬 {st.session_state.active_chat}")
@@ -169,14 +167,12 @@ with col1:
         st.rerun()
 
 
-# ==================================================
 # RIGHT → NOTES SYSTEM
-# ==================================================
 with col2:
 
     st.subheader("📝 Notes")
 
-    # ================= INPUT =================
+    # INPUT
     with st.form("note_form", clear_on_submit=True):
         note_input = st.text_area("Write notes here")
         submitted = st.form_submit_button("➕ Add Note")
@@ -186,7 +182,7 @@ with col2:
 
     st.divider()
 
-    # ================= PINNED =================
+    # PINNED
     header_p, btn_p = st.columns([3, 1])
 
     with header_p:
@@ -213,7 +209,7 @@ with col2:
 
     st.divider()
 
-    # ================= NOTES HEADER =================
+    # NOTES HEADER
     header_n, btn_n = st.columns([3, 1])
 
     with header_n:
@@ -224,7 +220,7 @@ with col2:
             st.session_state.notes = []
             st.rerun()
 
-    # ================= NOTES LIST =================
+    # NOTES LIST
     for i, n in enumerate(st.session_state.notes):
         c1, c2, c3 = st.columns([4, 1, 1])
 
