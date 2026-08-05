@@ -7,7 +7,7 @@ from rag_service import (
     chunk_text,
     create_embeddings,
     store_embeddings,
-    reset_vectorstore   # 🔥 ADD THIS
+    reset_vectorstore  
 )
 
 from rag_pipeline import rag_answer
@@ -22,16 +22,14 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
 
-    # 🔥 STEP 1: RESET OLD VECTOR DB
     reset_vectorstore()
 
-    # STEP 2: SAVE FILE
     path = f"{UPLOAD_DIR}/{file.filename}"
 
     with open(path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    # STEP 3: PROCESS NEW FILE
+
     text = extract_text_from_pdf(path)
     chunks = chunk_text(text)
     embeddings = create_embeddings(chunks)
@@ -51,3 +49,4 @@ def reset_vectorstore_api():
 @app.post("/chat")
 def chat(query: dict):
     return rag_answer(query["question"])
+
