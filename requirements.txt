@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+streamlit
+requests
+python-dotenv
+groq
+faiss-cpu
+numpy
+sentence-transformers
+pypdf
+python-multipart
