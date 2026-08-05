@@ -18,7 +18,7 @@ UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# ================= UPLOAD =================
+#  UPLOAD 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
 
@@ -47,7 +47,7 @@ def reset_vectorstore_api():
     reset_vectorstore()
     return {"message": "vectorstore cleared successfully"}
 
-# ================= CHAT =================
+#  CHAT 
 @app.post("/chat")
 def chat(query: dict):
     return rag_answer(query["question"])
