@@ -1,3 +1,4 @@
+# uvicorn app:app --reload
 from fastapi import FastAPI, UploadFile, File
 import shutil
 import os
